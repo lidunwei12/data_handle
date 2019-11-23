@@ -9,12 +9,13 @@ from werkzeug import secure_filename
 import logging
 
 app = Flask(__name__)
-handler = logging.FileHandler('log/app.log', encoding='UTF-8')
-# 设置日志文件，和字符编码
-logging_format = logging.Formatter(
-    '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
-handler.setFormatter(logging_format)
-app.logger.addHandler(handler)
+# handler = logging.FileHandler('log/app.log', encoding='UTF-8')
+# # 设置日志文件，和字符编码
+# logging_format = logging.Formatter(
+#     '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
+# handler.setFormatter(logging_format)
+# app.logger.addHandler(handler)
+logging.basicConfig(filename='log/app.log', level=logging.INFO)
 
 
 def allowed_file(filename, exam_file):
@@ -36,17 +37,17 @@ def zip_server():
     try:
         file = request.files['img']  # 获取上传的文件
         if file and allowed_file(file.filename, Config.PNG_ALLOWED_EXTENSIONS):  # 如果文件存在并且符合要求则为 true
-            app.logger.info('get_task'+str(file.filename))
+            logging.info('get_task'+str(file.filename))
             filename = secure_filename(file.filename)  # 获取上传文件的文件名
             file.save(os.path.join(Config.image_save_path, filename))  # 保存文件
             result = image_zip(filename)
-            app.logger.info('result' + str(result))
+            logging.info('result' + str(result))
             return result
         else:
-            app.logger.info('result' + 'no task')
+            logging.info('result' + 'no task')
             return {'status': 'no task'}
     except Exception as e:
-        app.logger.exception('%s', e)
+        logging.exception('%s', e)
         return {'status': 1, 'error': e}
 
 
