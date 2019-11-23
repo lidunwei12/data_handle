@@ -36,11 +36,14 @@ def zip_server():
     try:
         file = request.files['img']  # 获取上传的文件
         if file and allowed_file(file.filename, Config.PNG_ALLOWED_EXTENSIONS):  # 如果文件存在并且符合要求则为 true
+            app.logger.info('get_task'+str(file.filename))
             filename = secure_filename(file.filename)  # 获取上传文件的文件名
             file.save(os.path.join(Config.image_save_path, filename))  # 保存文件
             result = image_zip(filename)
+            app.logger.info('result' + str(result))
             return result
         else:
+            app.logger.info('result' + 'no task')
             return {'status': 'no task'}
     except Exception as e:
         app.logger.exception('%s', e)
