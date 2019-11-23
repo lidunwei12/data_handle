@@ -8,15 +8,11 @@ from config import Config
 from src.zip_png import image_zip
 from werkzeug import secure_filename
 from log_file import logger as logging
-import json
+from src.html_pdf import html_pdf_main
+import base64
+
 app = Flask(__name__)
-CORS(app,supports_credentials=True)
-# handler = logging.FileHandler('log/app.log', encoding='UTF-8')
-# # 设置日志文件，和字符编码
-# logging_format = logging.Formatter(
-#     '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
-# handler.setFormatter(logging_format)
-# app.logger.addHandler(handler)
+CORS(app, supports_credentials=True)
 
 
 def allowed_file(filename, exam_file):
@@ -38,15 +34,35 @@ def zip_server():
     try:
         file = request.files['img']  # 获取上传的文件
         if file and allowed_file(file.filename, Config.PNG_ALLOWED_EXTENSIONS):  # 如果文件存在并且符合要求则为 true
-            logging.info('get_task'+str(file.filename))
+            logging.info('get_task' + str(file.filename))
             filename = secure_filename(file.filename)  # 获取上传文件的文件名
             file.save(os.path.join(Config.image_save_path, filename))  # 保存文件
             result = image_zip(filename)
-            logging.info('result sucess')
+            logging.info('result success')
             return result
         else:
             logging.info('result' + 'no task')
             return {'status': 'no task'}
+    except Exception as e:
+        logging.exception('%s', e)
+        return {'status': 1, 'error': e}
+
+
+@app.route("/pdf", methods=['POST'])
+def pdf_server(status, name):
+    """
+    html转pdf服务，提供html文件、网址、字符串，返回压缩后的pdf文件
+    :return: jsonj结果
+    """
+    try:
+        logging.info('get_task')
+        if status == 'file':
+            html_data = base64.b64decode(name)
+            with open(Config.html_file, 'wb') as f:
+                f.write(html_data)
+        result = html_pdf_main(status, name)
+        logging.info('result success')
+        return result
     except Exception as e:
         logging.exception('%s', e)
         return {'status': 1, 'error': e}
