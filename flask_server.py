@@ -2,20 +2,21 @@
 flask后端服务
 """
 from flask import Flask, request
+from flask_cors import *
 import os
 from config import Config
 from src.zip_png import image_zip
 from werkzeug import secure_filename
-import logging
-
+from log_file import logger as logging
+import json
 app = Flask(__name__)
+CORS(app,supports_credentials=True)
 # handler = logging.FileHandler('log/app.log', encoding='UTF-8')
 # # 设置日志文件，和字符编码
 # logging_format = logging.Formatter(
 #     '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
 # handler.setFormatter(logging_format)
 # app.logger.addHandler(handler)
-logging.basicConfig(filename='log/app.log', level=logging.INFO)
 
 
 def allowed_file(filename, exam_file):
@@ -41,7 +42,7 @@ def zip_server():
             filename = secure_filename(file.filename)  # 获取上传文件的文件名
             file.save(os.path.join(Config.image_save_path, filename))  # 保存文件
             result = image_zip(filename)
-            logging.info('result' + str(result))
+            logging.info('result sucess')
             return result
         else:
             logging.info('result' + 'no task')

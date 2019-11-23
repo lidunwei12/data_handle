@@ -16,9 +16,5 @@ def image_zip(file_name):
         image_data = base64.b64encode(f.read())
         image_data = image_data.decode()
     os.remove(Config.new_image_path)
-<<<<<<< HEAD
     os.remove(Config.image_save_path+ file_name)
-=======
-    os.remove(Config.image_save_path+file_name)
->>>>>>> 69a786e12e514b99f51e3093373f6a5e8a4b118b
     return {'status': 0, 'image': image_data}

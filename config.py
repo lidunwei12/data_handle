@@ -14,4 +14,4 @@ class Config:
     """
     flask主服务
     """
-    port = 3389
+    port = 3301
