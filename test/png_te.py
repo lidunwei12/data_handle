@@ -8,9 +8,10 @@ def png_test(file):
     :param file: png文件路径
     :return: 结果
     """
-    files = {'': open(file, 'rb')}
+    files = {'img': open(file, 'rb')}
+    print(files)
     r = requests.post('http://' + Config.ip + ':'+str(Config.port) + '/image', files=files)
     print(r.text)
 
 
-png_test('..data/20190930124444.png')
+png_test('../data/20190930124444.png')

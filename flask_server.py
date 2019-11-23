@@ -9,7 +9,7 @@ from werkzeug import secure_filename
 import logging
 
 app = Flask(__name__)
-handler = logging.FileHandler('app.log', encoding='UTF-8')
+handler = logging.FileHandler('log/app.log', encoding='UTF-8')
 # 设置日志文件，和字符编码
 logging_format = logging.Formatter(
     '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
