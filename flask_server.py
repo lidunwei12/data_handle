@@ -6,8 +6,15 @@ import os
 from config import Config
 from src.zip_png import image_zip
 from werkzeug import secure_filename
+import logging
 
 app = Flask(__name__)
+handler = logging.FileHandler('app.log', encoding='UTF-8')
+# 设置日志文件，和字符编码
+logging_format = logging.Formatter(
+    '%(asctime)s - %(levelname)s - %(filename)s - %(funcName)s - %(lineno)s - %(message)s')
+handler.setFormatter(logging_format)
+app.logger.addHandler(handler)
 
 
 def allowed_file(filename, exam_file):
@@ -36,6 +43,7 @@ def zip_server():
         else:
             return {'status': 'no task'}
     except Exception as e:
+        app.logger.exception('%s', e)
         return {'status': 1, 'error': e}
 
 
